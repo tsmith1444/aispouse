@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Privacy Policy - AI Spouse</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      line-height: 1.6;
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    h1 {
+      text-align: center;
+    }
+    a {
+      color: #4CAF50;
+    }
+  </style>
+</head>
+<body>
+  <h1>Privacy Policy</h1>
+  <p>Last updated: May 2023</p>
+  
+  <h2>Introduction</h2>
+  <p>This Privacy Policy describes how AI Spouse ("we", "our", or "us") collects, uses, and shares your information when you use our service.</p>
+  
+  <h2>Information We Collect</h2>
+  <p>We collect the following types of information:</p>
+  <ul>
+    <li>Profile information you provide (name, personality preferences)</li>
+    <li>Optional demographic information (age, gender)</li>
+    <li>Messages exchanged with the AI</li>
+    <li>Usage data and session information</li>
+  </ul>
+  
+  <h2>How We Use Your Information</h2>
+  <p>We use the information we collect to:</p>
+  <ul>
+    <li>Provide and improve our service</li>
+    <li>Personalize your experience</li>
+    <li>Analyze usage patterns to enhance features</li>
+    <li>Research and development purposes</li>
+  </ul>
+  
+  <h2>Data Retention</h2>
+  <p>We retain your data for as long as your account is active or as needed to provide you services.</p>
+  
+  <h2>Contact Us</h2>
+  <p>If you have any questions about this Privacy Policy, please contact us.</p>
+  
+  <p><a href="/">Return to AI Spouse</a></p>
+</body>
+</html>
