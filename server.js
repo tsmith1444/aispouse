@@ -28,6 +28,9 @@ app.get('/api/test', (req, res) => {
   res.json({ message: 'API is working' });
 });
 
+// Add your other API routes here
+// ...
+
 // Serve static assets in production
 if (process.env.NODE_ENV === 'production') {
   // Set static folder
