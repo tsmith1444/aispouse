@@ -5,6 +5,7 @@ const path = require('path');
 const dotenv = require('dotenv');
 const axios = require('axios');
 const { Parser } = require('json2csv');
+const OpenAI = require('openai');
 
 // Load environment variables
 dotenv.config();
@@ -23,9 +24,9 @@ mongoose.connect(process.env.MONGODB_URI, {
   .then(() => console.log('MongoDB Connected'))
   .catch(err => console.log('MongoDB Connection Error:', err));
 
-// API routes
-app.get('/api/test', (req, res) => {
-  res.json({ message: 'API is working' });
+// Initialize OpenAI
+const openai = new OpenAI({
+  apiKey: process.env.OPENAI_API_KEY
 });
 
 // Define Profile Schema directly in server.js
@@ -51,6 +52,14 @@ const ProfileSchema = new mongoose.Schema({
   gender: {
     type: String
   },
+  conversations: [{
+    message: String,
+    response: String,
+    timestamp: {
+      type: Date,
+      default: Date.now
+    }
+  }],
   createdAt: {
     type: Date,
     default: Date.now
@@ -58,6 +67,11 @@ const ProfileSchema = new mongoose.Schema({
 });
 
 const Profile = mongoose.model('Profile', ProfileSchema);
+
+// API routes
+app.get('/api/test', (req, res) => {
+  res.json({ message: 'API is working' });
+});
 
 // API route to create a profile
 app.post('/api/profile', async (req, res) => {
@@ -111,7 +125,7 @@ app.get('/api/profile/:userId', async (req, res) => {
   }
 });
 
-// API route for chat
+// API route for chat with OpenAI integration
 app.post('/api/chat/:userId', async (req, res) => {
   try {
     const { userId } = req.params;
@@ -124,19 +138,53 @@ app.post('/api/chat/:userId', async (req, res) => {
       return res.status(404).json({ message: 'Profile not found' });
     }
     
-    // Generate a response based on personality
-    let response;
+    // Get conversation history (last 10 messages)
+    const conversationHistory = profile.conversations || [];
+    const recentConversations = conversationHistory.slice(-10);
+    
+    // Create a prompt with personality and conversation history
+    let systemPrompt = `You are ${profile.husbandName}, a ${profile.age || 'adult'} year old ${profile.gender || 'person'} with a ${profile.personality.toLowerCase()} personality. `;
+    
     switch (profile.personality) {
       case 'Romantic':
-        response = `My dear, ${message}? That's so wonderful to hear from you. I've been thinking about you all day.`;
+        systemPrompt += "You are very affectionate, caring, and express your love frequently. You use terms of endearment and are emotionally expressive.";
         break;
       case 'Funny':
-        response = `Haha! ${message}? That's hilarious! You always know how to make me laugh.`;
+        systemPrompt += "You have a great sense of humor, love making jokes, and always try to make your spouse laugh. You're playful and witty.";
         break;
       case 'Supportive':
       default:
-        response = `I understand completely. When you say "${message}", I'm here to support you no matter what.`;
+        systemPrompt += "You are understanding, empathetic, and always there to support your spouse. You're a good listener and give thoughtful advice.";
     }
+    
+    // Format conversation history for context
+    const conversationContext = recentConversations.map(conv => 
+      `User: ${conv.message}\nYou: ${conv.response}`
+    ).join('\n');
+    
+    // Generate response using OpenAI
+    const completion = await openai.chat.completions.create({
+      model: "gpt-3.5-turbo",
+      messages: [
+        { role: "system", content: systemPrompt },
+        { role: "system", content: `Previous conversation:\n${conversationContext}` },
+        { role: "user", content: message }
+      ],
+      max_tokens: 150,
+      temperature: 0.7,
+    });
+    
+    // Get the AI response
+    const response = completion.choices[0].message.content;
+    
+    // Save the conversation
+    profile.conversations.push({
+      message,
+      response,
+      timestamp: Date.now()
+    });
+    
+    await profile.save();
     
     res.json({ message: response });
   } catch (err) {
