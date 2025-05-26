@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import './App.css';
 import { getProfile, createProfile, sendMessage } from './api';
+// Add these imports for VoiceChat
+import VoiceChat from './VoiceChat';
+import './VoiceChat.css';
 
 function App() {
   const [userId, setUserId] = useState('');
@@ -181,6 +184,9 @@ function App() {
           Send
         </button>
       </form>
+      
+      {/* Add Voice Chat Component here */}
+      <VoiceChat />
     </div>
   );
 
