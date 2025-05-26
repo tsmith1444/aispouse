@@ -1,11 +1,13 @@
 import React, { useState, useEffect, useRef } from 'react';
 import './VoiceChat.css';
 
-const VoiceChat = ({ userId, onSendMessage }) => {
+const VoiceChat = ({ userId, onSendMessage, lastResponse }) => {
   const [isListening, setIsListening] = useState(false);
   const [transcript, setTranscript] = useState('');
   const [isSending, setIsSending] = useState(false);
+  const [isSpeaking, setIsSpeaking] = useState(false);
   const recognitionRef = useRef(null);
+  const speechSynthesisRef = useRef(window.speechSynthesis);
   
   // Initialize speech recognition
   useEffect(() => {
@@ -32,6 +34,39 @@ const VoiceChat = ({ userId, onSendMessage }) => {
     }
   }, [isListening]);
   
+  // Text-to-speech for AI responses
+  useEffect(() => {
+    if (lastResponse && !isSpeaking && !isListening) {
+      speakText(lastResponse);
+    }
+  }, [lastResponse, isSpeaking, isListening]);
+  
+  const speakText = (text) => {
+    if ('speechSynthesis' in window) {
+      // Cancel any ongoing speech
+      speechSynthesisRef.current.cancel();
+      
+      const utterance = new SpeechSynthesisUtterance(text);
+      
+      // Set voice (optional - can be customized)
+      const voices = speechSynthesisRef.current.getVoices();
+      if (voices.length > 0) {
+        // Try to find a female voice for variety
+        const femaleVoice = voices.find(voice => voice.name.includes('female'));
+        utterance.voice = femaleVoice || voices[0];
+      }
+      
+      utterance.rate = 1.0; // Speed
+      utterance.pitch = 1.0; // Pitch
+      
+      utterance.onstart = () => setIsSpeaking(true);
+      utterance.onend = () => setIsSpeaking(false);
+      utterance.onerror = () => setIsSpeaking(false);
+      
+      speechSynthesisRef.current.speak(utterance);
+    }
+  };
+  
   const toggleListening = () => {
     if (isListening) {
       recognitionRef.current.stop();
@@ -42,6 +77,12 @@ const VoiceChat = ({ userId, onSendMessage }) => {
         setIsSending(true);
       }
     } else {
+      // Cancel any ongoing speech when starting to listen
+      if (isSpeaking) {
+        speechSynthesisRef.current.cancel();
+        setIsSpeaking(false);
+      }
+      
       setTranscript('');
       recognitionRef.current.start();
       setIsListening(true);
@@ -80,11 +121,16 @@ const VoiceChat = ({ userId, onSendMessage }) => {
         </div>
       ) : (
         <button 
-          className={`voice-button ${isListening ? 'listening' : ''}`}
+          className={`voice-button ${isListening ? 'listening' : ''} ${isSpeaking ? 'speaking' : ''}`}
           onClick={toggleListening}
+          disabled={isSpeaking}
         >
-          {isListening ? 'Stop Voice' : 'Start Voice Chat'}
+          {isListening ? 'Stop Voice' : isSpeaking ? 'Speaking...' : 'Start Voice Chat'}
         </button>
+      )}
+      
+      {isSpeaking && (
+        <p className="speaking-indicator">Your AI spouse is speaking...</p>
       )}
     </div>
   );
