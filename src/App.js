@@ -100,6 +100,20 @@ function App() {
     }
   };
 
+  // New function to handle voice messages
+  const handleVoiceMessage = (voiceText) => {
+    if (!voiceText.trim()) return;
+    
+    // Create a synthetic event object
+    const fakeEvent = { preventDefault: () => {} };
+    
+    // Set the message text from voice input
+    setMessage(voiceText);
+    
+    // Call the existing send message function
+    handleSendMessage(fakeEvent);
+  };
+
   const renderProfileForm = () => (
     <div className="profile-form">
       <h2>Create Your AI Husband</h2>
@@ -185,8 +199,11 @@ function App() {
         </button>
       </form>
       
-      {/* Add Voice Chat Component here */}
-      <VoiceChat />
+      {/* Add Voice Chat Component here with onSendMessage prop */}
+      <VoiceChat 
+        userId={userId}
+        onSendMessage={handleVoiceMessage}
+      />
     </div>
   );
 
