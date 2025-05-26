@@ -199,10 +199,14 @@ function App() {
         </button>
       </form>
       
-      {/* Add Voice Chat Component here with onSendMessage prop */}
+      {/* Add Voice Chat Component here with updated props */}
       <VoiceChat 
         userId={userId}
         onSendMessage={handleVoiceMessage}
+        lastResponse={conversation.length > 0 ? 
+          conversation[conversation.length - 1].sender === 'ai' ? 
+            conversation[conversation.length - 1].text : null 
+          : null}
       />
     </div>
   );
