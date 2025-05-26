@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import './App.css';
 import { getProfile, createProfile, sendMessage } from './api';
+import VoiceChat from './VoiceChat';
+import './VoiceChat.css';
 
 function App() {
   const [userId, setUserId] = useState('');
@@ -74,12 +76,15 @@ function App() {
     }
   };
 
-  const handleSendMessage = async (e) => {
-    e.preventDefault();
-    if (!message.trim()) return;
-
-    const userMessage = message;
-    setMessage('');
+  const handleSendMessage = async (messageText) => {
+    // If messageText is provided, use it (from voice chat)
+    // Otherwise use the message from the text input
+    const userMessage = messageText || message;
+    if (!userMessage.trim()) return;
+    
+    // Clear text input if using that
+    if (!messageText) setMessage('');
+    
     setConversation([...conversation, { sender: 'user', text: userMessage }]);
     
     try {
@@ -94,6 +99,17 @@ function App() {
         text: 'Sorry, I had trouble responding. Please try again.' 
       }]);
       setLoading(false);
+    }
+  };
+
+  // Modified to accept an event or direct message text
+  const handleSubmit = (e) => {
+    if (e && e.preventDefault) {
+      e.preventDefault();
+      handleSendMessage();
+    } else {
+      // If called directly with message text (from voice chat)
+      handleSendMessage(e);
     }
   };
 
@@ -169,7 +185,7 @@ function App() {
         {loading && <div className="message ai loading">Typing...</div>}
       </div>
       
-      <form onSubmit={handleSendMessage} className="message-form">
+      <form onSubmit={handleSubmit} className="message-form">
         <input
           type="text"
           value={message}
@@ -181,6 +197,16 @@ function App() {
           Send
         </button>
       </form>
+      
+      {/* Voice Chat Component */}
+      <VoiceChat 
+        userId={userId}
+        onSendMessage={handleSubmit}
+        lastResponse={conversation.length > 0 ? 
+          conversation[conversation.length - 1].sender === 'ai' ? 
+            conversation[conversation.length - 1].text : null 
+          : null}
+      />
     </div>
   );
 
@@ -203,4 +229,3 @@ function App() {
 }
 
 export default App;
-
