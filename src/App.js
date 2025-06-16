@@ -85,16 +85,7 @@ function App() {
       setLoading(true);
       const response = await sendMessage(userId, userMessage);
 
-      setConversation(prev => [...prev, { sender: 'ai', text: response.message }]);
-
-      if (response.audioUrl) {
-        if (window.spouseAudio) {
-          window.spouseAudio.pause();
-          window.spouseAudio.currentTime = 0;
-        }
-        window.spouseAudio = new Audio(response.audioUrl);
-        window.spouseAudio.play();
-      }
+      setConversation(prev => [...prev, { sender: 'ai', text: response.message, audioUrl: response.audioUrl }]);
 
       setLoading(false);
     } catch (err) {
@@ -193,10 +184,8 @@ function App() {
       <VoiceChat 
         userId={userId}
         onSendMessage={handleVoiceMessage}
-        lastResponse={conversation.length > 0 ? 
-          conversation[conversation.length - 1].sender === 'ai' ? 
-            conversation[conversation.length - 1].text : null 
-          : null}
+        lastResponse={conversation.length > 0 && conversation[conversation.length - 1].sender === 'ai' ? conversation[conversation.length - 1].text : null}
+        lastAudioUrl={conversation.length > 0 && conversation[conversation.length - 1].audioUrl ? conversation[conversation.length - 1].audioUrl : null}
       />
     </div>
   );
