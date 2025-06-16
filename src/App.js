@@ -12,10 +12,14 @@ const handleSendMessage = async (e) => {
 
     setConversation(prev => [...prev, { sender: 'ai', text: response.message }]);
 
-    // 🔊 Play the spouse voice if audioUrl is returned
+    // ✅ Stop repeated playback
     if (response.audioUrl) {
-      const audio = new Audio(response.audioUrl);
-      audio.play();
+      if (window.spouseAudio) {
+        window.spouseAudio.pause();
+        window.spouseAudio.currentTime = 0;
+      }
+      window.spouseAudio = new Audio(response.audioUrl);
+      window.spouseAudio.play();
     }
 
     setLoading(false);
