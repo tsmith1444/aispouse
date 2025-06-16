@@ -3,7 +3,7 @@ const fs = require('fs');
 const path = require('path');
 
 const ELEVEN_API_KEY = 'sk_bdfe1680c82fc70761926fa58d1e96be2d4295e8bc2b1205'; // fake key
-const VOICE_ID = 'ZT9u07TYPVl83ejeLakq'; // Rachelle's voice
+const VOICE_ID = 'ZT9u07TYPVl83ejeLakq'; // female voice ID
 
 async function generateSpouseVoice(text) {
   try {
@@ -25,11 +25,13 @@ async function generateSpouseVoice(text) {
       }
     );
 
-    const audioPath = path.join(__dirname, 'public', 'spouse_response.mp3');
-    fs.writeFileSync(audioPath, response.data);
-    return '/spouse_response.mp3';
+    const filename = `spouse_response_${Date.now()}.mp3`;
+    const filePath = path.join(__dirname, 'public', filename);
+    fs.writeFileSync(filePath, response.data);
+
+    return `/${filename}`;
   } catch (error) {
-    console.error('Error generating voice:', error.message);
+    console.error('Voice generation failed:', error.message);
     return null;
   }
 }
