@@ -45,7 +45,7 @@ function App() {
   const handleProfileSubmit = async (e) => {
     e.preventDefault();
     if (!husbandName) {
-      setError('Please enter a name for your AI husband');
+      setError('Please enter a name for your AI spouse');
       return;
     }
 
@@ -107,26 +107,44 @@ function App() {
 
   const renderProfileForm = () => (
     <div className="profile-form">
-      <h2>Create Your AI Husband</h2>
+      <h2>Choose Your AI Spouse</h2>
       {error && <p className="error">{error}</p>}
       <form onSubmit={handleProfileSubmit}>
         <div className="form-group">
-          <label>Name:</label>
+          <label>Spouse Name:</label>
           <input
             type="text"
             value={husbandName}
             onChange={(e) => setHusbandName(e.target.value)}
-            placeholder="Enter a name"
+            placeholder="What would you like to call them?"
           />
         </div>
+
         <div className="form-group">
-          <label>Personality:</label>
-          <select value={personality} onChange={(e) => setPersonality(e.target.value)}>
-            <option value="Romantic">Romantic</option>
-            <option value="Supportive">Supportive</option>
-            <option value="Funny">Funny</option>
-          </select>
+          <label>Select a Personality:</label>
+          <div className="preset-selector">
+            {[
+              { label: 'Luna', personality: 'Romantic' },
+              { label: 'Sage', personality: 'Supportive' },
+              { label: 'Maya', personality: 'Funny' },
+              { label: 'Nova', personality: 'Driven' },
+              { label: 'Bliss', personality: 'Soothing' }
+            ].map((option) => (
+              <button
+                key={option.label}
+                type="button"
+                className={`preset-button ${personality === option.personality ? 'selected' : ''}`}
+                onClick={() => {
+                  setPersonality(option.personality);
+                  setHusbandName(option.label);
+                }}
+              >
+                {option.label}
+              </button>
+            ))}
+          </div>
         </div>
+
         <div className="form-group">
           <label>Age (optional):</label>
           <input
@@ -136,6 +154,7 @@ function App() {
             placeholder="Enter age"
           />
         </div>
+
         <div className="form-group">
           <label>Gender (optional):</label>
           <input
@@ -145,8 +164,9 @@ function App() {
             placeholder="Enter gender"
           />
         </div>
+
         <button type="submit" disabled={loading}>
-          {loading ? 'Creating...' : 'Create AI Husband'}
+          {loading ? 'Creating...' : 'Create My Spouse'}
         </button>
       </form>
     </div>
@@ -158,7 +178,7 @@ function App() {
       <div className="conversation">
         {conversation.length === 0 ? (
           <p className="welcome-message">
-            Say hello to your {profile.personality.toLowerCase()} AI husband!
+            Say hello to your {profile.personality.toLowerCase()} AI spouse!
           </p>
         ) : (
           conversation.map((msg, index) => (
