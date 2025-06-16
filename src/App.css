@@ -143,11 +143,16 @@ footer a {
 footer a:hover {
   text-decoration: underline;
 }
+
+/* === PRESET SPOUSE STYLES === */
+
 .preset-selector {
   display: flex;
   flex-wrap: wrap;
   gap: 10px;
   margin-top: 10px;
+  margin-bottom: 15px;
+  justify-content: center;
 }
 
 .preset-button {
@@ -164,4 +169,16 @@ footer a:hover {
   background-color: #4285f4;
   color: white;
   border-color: #4285f4;
+}
+
+.preset-button:hover {
+  background-color: #ddd;
+  border-color: #999;
+}
+
+@media (max-width: 600px) {
+  .preset-button {
+    width: 100%;
+    text-align: center;
+  }
 }
