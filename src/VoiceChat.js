@@ -31,14 +31,21 @@ const VoiceChat = ({ userId, onSendMessage, lastResponse, lastAudioUrl }) => {
     }
   }, [isListening]);
 
-  // ✅ Play real audio from ElevenLabs
+  // ✅ Play real audio from ElevenLabs with fallback logging
   useEffect(() => {
     if (lastAudioUrl && !isListening) {
       const audio = new Audio(lastAudioUrl + '?t=' + Date.now());
       setIsSpeaking(true);
       audio.onended = () => setIsSpeaking(false);
       audio.onerror = () => setIsSpeaking(false);
-      audio.play();
+      audio.play()
+        .then(() => {
+          console.log('🔊 Audio playback started');
+        })
+        .catch((err) => {
+          console.warn('⚠️ Audio playback failed:', err);
+          setIsSpeaking(false);
+        });
     }
   }, [lastAudioUrl, isListening]);
 
