@@ -12,7 +12,7 @@ const handleSendMessage = async (e) => {
 
     setConversation(prev => [...prev, { sender: 'ai', text: response.message }]);
 
-    // ✅ Stop repeated playback
+    // ✅ Stop repeated playback and play only once
     if (response.audioUrl) {
       if (window.spouseAudio) {
         window.spouseAudio.pause();
