@@ -3,7 +3,7 @@ const fs = require('fs');
 const path = require('path');
 
 const ELEVEN_API_KEY = 'sk_bdfe1680c82fc70761926fa58d1e96be2d4295e8bc2b1205'; // fake key
-const VOICE_ID = 'ZT9u07TYPVl83ejeLakq'; // female voice ID
+const VOICE_ID = 'ZT9u07TYPVl83ejeLakq'; // your saved female voice
 
 async function generateSpouseVoice(text) {
   try {
@@ -29,6 +29,7 @@ async function generateSpouseVoice(text) {
     const filePath = path.join(__dirname, 'public', filename);
     fs.writeFileSync(filePath, response.data);
 
+    console.log('Generated voice file:', filename); // debug log
     return `/${filename}`;
   } catch (error) {
     console.error('Voice generation failed:', error.message);
