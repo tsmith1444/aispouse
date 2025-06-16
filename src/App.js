@@ -16,10 +16,11 @@ function App() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [step, setStep] = useState(() => {
-  localStorage.removeItem('userId');
-  return 'profile';
-});
+    localStorage.removeItem('userId');
+    return 'profile';
+  });
 
+  console.log('RENDER STEP:', step);
 
   useEffect(() => {
     const storedUserId = localStorage.getItem('userId');
