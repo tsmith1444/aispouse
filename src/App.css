@@ -143,3 +143,25 @@ footer a {
 footer a:hover {
   text-decoration: underline;
 }
+.preset-selector {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.preset-button {
+  padding: 10px 16px;
+  background-color: #eee;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: all 0.2s ease;
+}
+
+.preset-button.selected {
+  background-color: #4285f4;
+  color: white;
+  border-color: #4285f4;
+}
