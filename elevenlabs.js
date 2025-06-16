@@ -2,12 +2,12 @@ const axios = require('axios');
 const fs = require('fs');
 const path = require('path');
 
-const ELEVEN_API_KEY = 'sk_bdfe1680c82fc70761926fa58d1e96be2d4295e8bc2b1205'; // your real key goes here
-const VOICE_ID = 'ZT9u07TYPVl83ejeLakq'; // your saved female voice ID
+const ELEVEN_API_KEY = 'sk_bdfe1680c82fc70761926fa58d1e96be2d4295e8bc2b1205'; // your real key
+const VOICE_ID = 'PjkBJlyjC1SUbaEXg0K7'; // ✅ new female custom voice
 
 async function generateSpouseVoice(text) {
   try {
-    console.log('📤 Sending to ElevenLabs:', { VOICE_ID, text }); // log input
+    console.log('📤 Sending to ElevenLabs:', { VOICE_ID, text });
 
     const response = await axios.post(
       `https://api.elevenlabs.io/v1/text-to-speech/${VOICE_ID}`,
@@ -31,7 +31,7 @@ async function generateSpouseVoice(text) {
     const filePath = path.join(__dirname, 'public', filename);
     fs.writeFileSync(filePath, response.data);
 
-    console.log('✅ Voice file saved as:', filename); // log output
+    console.log('✅ Voice file saved as:', filename);
     return `/${filename}`;
   } catch (error) {
     console.error('❌ Voice generation failed:', error.message);
